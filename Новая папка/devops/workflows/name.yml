@@ -1,0 +1,37 @@
+name: Telegram Notify
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install pyTelegramBotAPI
+
+      - name: Extract git info & send notification
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.8547338296:AAG5ReX6Tlq17mgPfo0pQEl_9Uo8Fa2eV08 }}
+          CHAT_ID: ${{ secrets.5139109651 }}
+        run: |
+          PR_NAME="${{ github.repository }}"
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "no-tag")
+          AUTHOR="${{ github.actor }}"
+
+          python python.py "$PR_NAME" "$VERSION" "$AUTHOR"
